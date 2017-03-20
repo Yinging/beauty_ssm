@@ -8,7 +8,7 @@ CREATE PROCEDURE `beauty_ssm`.`execute_buy`
 (IN  v_user_id BIGINT, 
  IN  v_goods_id BIGINT,
  IN  v_title VARCHAR(120), 
- OUT r_result INT)
+ OUT  r_result INT)
 	BEGIN
 		DECLARE insert_count INT DEFAULT 0;
 		START TRANSACTION;

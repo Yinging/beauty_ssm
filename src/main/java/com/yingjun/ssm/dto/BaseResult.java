@@ -16,17 +16,36 @@ public class BaseResult<T> implements Serializable {
 
 	private static final long serialVersionUID = -4185151304730685014L;
 
+    /**
+     * 表示是否成功
+     */
 	private boolean success;
 
+    /**
+     * 输出的数据
+     */
     private T data;
 
+    /**
+     *失败信息
+     */
     private String error;
 
+    /**
+     * 构造,失败情况下的输出
+     * @param success
+     * @param error
+     */
     public BaseResult(boolean success, String error) {
         this.success = success;
         this.error = error;
     }
 
+    /**
+     * 构造，成功情况下的输出
+     * @param success
+     * @param data
+     */
     public BaseResult(boolean success, T data) {
         this.success = success;
         this.data = data;
@@ -56,9 +75,12 @@ public class BaseResult<T> implements Serializable {
         this.error = error;
     }
 
-	@Override
-	public String toString() {
-		return "BaseResult [success=" + success + ", data=" + data + ", error=" + error + "]";
-	}
-
+    @Override
+    public String toString() {
+        return "BaseResult{" +
+                "success=" + success +
+                ", data=" + data +
+                ", error='" + error + '\'' +
+                '}';
+    }
 }

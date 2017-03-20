@@ -27,6 +27,13 @@ public class RedisCache {
 	@Autowired
 	private RedisTemplate<String, String> redisTemplate;
 
+	/**
+	 * 将单条数据写入到redis中，不设置缓存时间
+	 * @param key
+	 * @param obj
+	 * @param <T>
+	 * @return
+	 */
 	public <T> boolean putCache(String key, T obj) {
 		final byte[] bkey = key.getBytes();
 		final byte[] bvalue = ProtoStuffSerializerUtil.serialize(obj);
@@ -39,6 +46,13 @@ public class RedisCache {
 		return result;
 	}
 
+	/**
+	 * 将单条数据写入到redis中，设置过期时间
+	 * @param key
+	 * @param obj
+	 * @param expireTime
+	 * @param <T>
+	 */
 	public <T> void putCacheWithExpireTime(String key, T obj, final long expireTime) {
 		final byte[] bkey = key.getBytes();
 		final byte[] bvalue = ProtoStuffSerializerUtil.serialize(obj);
@@ -51,6 +65,13 @@ public class RedisCache {
 		});
 	}
 
+	/**
+	 * 将多条数据写入到redis中
+	 * @param key
+	 * @param objList
+	 * @param <T>
+	 * @return
+	 */
 	public <T> boolean putListCache(String key, List<T> objList) {
 		final byte[] bkey = key.getBytes();
 		final byte[] bvalue = ProtoStuffSerializerUtil.serializeList(objList);
@@ -63,6 +84,14 @@ public class RedisCache {
 		return result;
 	}
 
+	/**
+	 * 将多条数据写入到redis中，设置过期时间
+	 * @param key
+	 * @param objList
+	 * @param expireTime
+	 * @param <T>
+	 * @return
+	 */
 	public <T> boolean putListCacheWithExpireTime(String key, List<T> objList, final long expireTime) {
 		final byte[] bkey = key.getBytes();
 		final byte[] bvalue = ProtoStuffSerializerUtil.serializeList(objList);
@@ -76,6 +105,13 @@ public class RedisCache {
 		return result;
 	}
 
+	/**
+	 * 通过键获取对应的redis缓存值
+	 * @param key
+	 * @param targetClass
+	 * @param <T>
+	 * @return
+	 */
 	public <T> T getCache(final String key, Class<T> targetClass) {
 		byte[] result = redisTemplate.execute(new RedisCallback<byte[]>() {
 			@Override
@@ -86,9 +122,17 @@ public class RedisCache {
 		if (result == null) {
 			return null;
 		}
+		//反序列化
 		return ProtoStuffSerializerUtil.deserialize(result, targetClass);
 	}
 
+	/**
+	 * 根据key获取多条redis中存在的缓存
+	 * @param key
+	 * @param targetClass
+	 * @param <T>
+	 * @return
+	 */
 	public <T> List<T> getListCache(final String key, Class<T> targetClass) {
 		byte[] result = redisTemplate.execute(new RedisCallback<byte[]>() {
 			@Override

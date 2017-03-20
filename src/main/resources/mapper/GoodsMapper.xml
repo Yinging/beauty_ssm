@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yingjun.ssm.dao.GoodsMapper">
+  <resultMap id="BaseResultMap" type="Goods">
+    <id column="goods_id" jdbcType="BIGINT" property="goodsId" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+    <result column="price" jdbcType="REAL" property="price" />
+    <result column="number" jdbcType="INTEGER" property="number" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    goods_id, title, state, price, number, create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from _goods
+    where goods_id = #{goodsId,jdbcType=BIGINT}
+  </select>
+  <insert id="insert" parameterType="Goods">
+    insert into _goods (goods_id, title, state, 
+      price, number, create_time, 
+      update_time)
+    values (#{goodsId,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER}, 
+      #{price,jdbcType=REAL}, #{number,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="Goods">
+    insert into _goods
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="goodsId != null">
+        goods_id,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+      <if test="price != null">
+        price,
+      </if>
+      <if test="number != null">
+        number,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="goodsId != null">
+        #{goodsId,jdbcType=BIGINT},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=INTEGER},
+      </if>
+      <if test="price != null">
+        #{price,jdbcType=REAL},
+      </if>
+      <if test="number != null">
+        #{number,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="Goods">
+    update _goods
+    <set>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=INTEGER},
+      </if>
+      <if test="price != null">
+        price = #{price,jdbcType=REAL},
+      </if>
+      <if test="number != null">
+        number = #{number,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where goods_id = #{goodsId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="Goods">
+    update _goods
+    set title = #{title,jdbcType=VARCHAR},
+      state = #{state,jdbcType=INTEGER},
+      price = #{price,jdbcType=REAL},
+      number = #{number,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where goods_id = #{goodsId,jdbcType=BIGINT}
+  </update>
+  
+  <select id="queryAllGoods" resultType="Goods">
+    SELECT *
+    FROM _goods
+    ORDER BY create_time DESC
+    limit #{offset},#{limit}
+  </select>
+  
+  <update id="reduceNumber">
+    UPDATE _goods
+    SET
+    number = number - 1
+    WHERE
+    goods_id = #{goodsId}
+    AND state = 1
+    and number > 0;
+  </update>
+  
+  <select id="buyWithProcedure" statementType="CALLABLE" useCache="false">
+    call execute_buy(
+      #{userId,jdbcType=BIGINT,mode=IN},
+      #{goodsId,jdbcType=BIGINT,mode=IN},
+      #{title,jdbcType=VARCHAR,mode=IN},
+      #{result,jdbcType=INTEGER,mode=OUT}
+    )
+  </select>
+  <cache type="org.mybatis.caches.ehcache.LoggingEhcache" />
+</mapper>
